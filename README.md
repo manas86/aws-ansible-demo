@@ -77,3 +77,16 @@ An AWS EC2 instance
         * Run ansible command as ansadmin user it should be successful 
         ` ansible all -m ping`
         ![](/Images/AnsibleCommand.png)
+        
+     7. Now run further simple commands:
+        * `copy`
+        ![ansadmin window](/Images/ansadmin-1.png)
+        ![target window](/Images/target-1.png)
+        * `httpd`
+        ![failed](/Images/failed%20htpsd.png) 
+        As yum can't be installed without root.
+        ![success](/Images/success%20httpd.png)
+        ![target instances](/Images/httpd%20on%20target.png)
+        * Start httpd service on target system
+        ![start httpd](/Images/start%20httpd%20master.png)
+        ![target instance](/Images/httpd%20running%20on%20target.png)
