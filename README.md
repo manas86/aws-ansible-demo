@@ -23,4 +23,57 @@ An AWS EC2 instance
     > Before "Launch" make sure you select a new key-pair. And copy the keyparname.pem into you local .ssh folder.
     ![Step8](/Images/Step8.png)
     ![Copy AWS Key to your Local](/Images/Copy%20AWS%20key%20to%20Local.png)
-     
+3.  Then on AWS dashbord, we will see 2 instances are running with same name.
+    Change one instance name as "AnsibleServer" and "WebServer"   
+    ![](/Images/Rename%20Instances.png)  
+4.  Now connect to both instances using ssh connection as below
+    ![](/Images/AWS%20HostName.png)
+    After connecting via ssh to your own instances make sure you run `yum update`
+    ![](/Images/SSH%20Connections.png) on both instances.
+5.  Let's call one instance as master and other as target. 
+    Now follow below steps:
+    
+    1.   On master: 
+  
+        * Add a EPEL (Extra Packages for Enterprise Linux)third party repository to get packages for Ansible
+        `rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
+        * Install Ansible
+        `yum install ansible -y `
+        * Check Ansible version
+        `ansible --version`
+    2.  Now on both master and target:
+        * Create a new user for ansible administration & grant admin access to user
+        ```
+        useradd ansadmin
+        passwd ansadmin (remember the password)
+        use visudo --> to add below lines
+        ansadmin        ALL=(ALL)       NOPASSWD: ALL
+        ```
+        * Since this is at learning stage, I use password based authentication 
+        `sed -ie 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config`
+        * And then quick restart
+        `service sshd restart`
+        
+    3.  Now login to target:
+        * run `ifconfig` to check the IP address of target machine.
+        ![](/Images/ip%20addr%20target%20machine.png)
+        
+    4.  Now login as `ansadmin` on Master node
+        ![](/Images/ansadmin%20ssh%20login.png)
+        * generate ssh key
+        ` ssh-keygen`
+        * Copy keys onto all ansible target nodes
+        `ssh-copy-id <target-server>`
+        ![](/Images/copy%20ssh%20key%20to%20target%20node.png)
+        while coping this will ask for the password.
+        * Now quick test to target ip will help a lot.
+        `ssh target-ip`
+        
+    5.  Now on Master
+        * Update target servers information on /etc/ansible/hosts file.
+        ![](/Images/ansible%20host.png)
+        
+    6.  Now on `ansadmin` session of master node
+        * Run ansible command as ansadmin user it should be successful 
+        ` ansible all -m ping`
+        ![](/Images/AnsibleCommand.png)
